@@ -1,0 +1,149 @@
+# repository, and deploys a full containerized application on AWS.
+#
+# First, the workflow deploys AWS infrastructure resources from AWS
+# CloudFormation templates, including a public load balancer and container
+# image repository.
+#
+# Then, the workflow builds and deploys the Docker image for one or more
+# microservices, using a CloudFormation template to deploy the image to an
+# Amazon ECS service.
+
+on:
+  push:
+    branches:
+      - master
+
+name: Deploy
+
+jobs:
+  # Deploy infrastructure resources like ECR repository and load balancer.
+  # This job will run on every code change to the master branch, but will only deploy
+  # changes if the infrastructure CloudFormation template in the repository have changed.
+  deploy-infrastructure:
+    name: Deploy infrastructure
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    outputs:
+      env-name: ${{ steps.env-name.outputs.environment }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    # The "environment name" is used as the base for CloudFormation stack names,
+    # and is derived from the GitHub repository name.
+    # For example, the repo 'Octocat/Hello-World' would have the environment name
+    # 'Octocat-Hello-World' and would deploy a stack name 'Octocat-Hello-World-ecr-repo'.
+    - name: Configure environment name
+      id: env-name
+      env:
+        REPO: ${{ github.repository }}
+      run: |
+        ENVIRONMENT=`echo $REPO | tr "/" "-"`
+        echo "Environment name: $ENVIRONMENT"
+        echo "environment=$ENVIRONMENT" >> "$GITHUB_OUTPUT"
+
+    - name: Configure AWS credentials
+      id: creds
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-cloudformation-deploy-role
+        role-session-name: DeployInfra
+        aws-region: eu-central-1
+
+    - name: Retrieve default VPC ID and public subnets
+      id: vpc
+      run: |
+        VPC_ID=`aws ec2 describe-vpcs --filters "Name=isDefault, Values=true" --query 'Vpcs[].VpcId' --output text`
+        echo "vpc-id=$VPC_ID" >> "$GITHUB_OUTPUT"
+
+        SUBNET_1=`aws ec2 describe-subnets --filters "Name=vpc-id,Values=$VPC_ID" "Name=default-for-az,Values=true" --query 'Subnets[0].SubnetId' --output text`
+        echo "subnet-one=$SUBNET_1" >> "$GITHUB_OUTPUT"
+
+        SUBNET_2=`aws ec2 describe-subnets --filters "Name=vpc-id,Values=$VPC_ID" "Name=default-for-az,Values=true" --query 'Subnets[1].SubnetId' --output text`
+        echo "subnet-two=$SUBNET_2" >> "$GITHUB_OUTPUT"
+
+    - name: Deploy infrastructure with CloudFormation
+      id: infrastructure-stack
+      uses: aws-actions/aws-cloudformation-github-deploy@v1
+      with:
+        name: ${{ steps.env-name.outputs.environment }}-infra
+        template: cloudformation/infrastructure.yml
+        role-arn: arn:aws:iam::${{ steps.creds.outputs.aws-account-id }}:role/github-actions-cloudformation-stack-role
+        no-fail-on-empty-changeset: "1"
+        parameter-overrides: >-
+          EnvironmentName=${{ steps.env-name.outputs.environment }},
+          VPC=${{ steps.vpc.outputs.vpc-id }},
+          PublicSubnetOne=${{ steps.vpc.outputs.subnet-one }},
+          PublicSubnetTwo=${{ steps.vpc.outputs.subnet-two }}
+
+  # Build and deploy a Docker image to an ECS service through CloudFormation.
+  #
+  # This job can be copied multiple times to deploy different microservices
+  # within the same application. For example, if there is another Dockerfile
+  # for another microservice in a 'backend-service' folder in the repository,
+  # another job named 'deploy-backend-service' can be added to this workflow
+  # which builds that Dockerfile and deploys the image to a 'backend-service'
+  # ECS service in a separate CloudFormation stack.
+  deploy-web-app:
+    name: Deploy web application
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    needs: deploy-infrastructure
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Configure AWS credentials
+      id: creds
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-cloudformation-deploy-role
+        role-session-name: DeployWebApp
+        aws-region: eu-central-1
+
+    - name: Login ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+
+    # When copying this job to add another microservice, update the image tag value
+    # below (for example, 'backend' instead of 'webapp'). Also update the 'docker build'
+    # command to build the new microservice's Dockerfile in the repository.
+    - name: Build, tag, and push webapp image
+      id: build-image
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: github-actions-${{ needs.deploy-infrastructure.outputs.env-name }}
+        IMAGE_TAG: webapp-${{ github.sha }}
+      run: |
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> "$GITHUB_OUTPUT"
+
+    # When copying this job to add another microservice, update the name of the stack and the
+    # service name below (for example, 'backend' instead of 'webapp'). Also add parameter
+    # overrides below named 'LoadBalancerPath' and 'LoadBalancerPriority' (for example,
+    # 'LoadBalancerPath=/backend/*,LoadBalancerPriority=2').
+    - name: Deploy ECS service with CloudFormation
+      id: service-stack
+      uses: aws-actions/aws-cloudformation-github-deploy@v1
+      with:
+        name: ${{ needs.deploy-infrastructure.outputs.env-name }}-webapp
+        template: cloudformation/service.yml
+        role-arn: arn:aws:iam::${{ steps.creds.outputs.aws-account-id }}:role/github-actions-cloudformation-stack-role
+        parameter-overrides: "EnvironmentName=${{ needs.deploy-infrastructure.outputs.env-name }}, ServiceName=webapp, ImageUrl=${{ steps.build-image.outputs.image }}, DBPort=${{secrets.DB_PORT}}, DBName=${{secrets.DB_NAME}}, DBUsername=${{secrets.DB_USERNAME}}, DBPassword=${{secrets.DB_PASSWORD}}"
+
+    - name: Print service URL
+      env:
+        URL: ${{ steps.service-stack.outputs.ServiceURL }}
+      run: |
+        echo "Service URL: $URL"
+
+    - name: Print database URL
+      env:
+        URL: ${{ steps.service-stack.outputs.DatabaseEndpoint }}
+      run: |
+        echo "Database URL: $URL"

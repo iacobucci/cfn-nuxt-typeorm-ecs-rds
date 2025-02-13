@@ -1,0 +1,9 @@
+{
+	// https://nuxt.com/docs/guide/concepts/typescript
+	"extends": "./.nuxt/tsconfig.json",
+	"compileroptions": {
+		"emitdecoratormetadata": true,
+		"experimentaldecorators": true,
+		"ignoreDiagnostics": [1240]
+	},
+}

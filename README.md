@@ -1,6 +1,6 @@
 # Aws Nuxt Typeorm
 
-Avviare la creazione dello stack che effettua la connessione OIDC alla repository di github di interesse
+Avviare la creazione dello stack che effettua la connessione OIDC alla repository di github di interesse.
 
 ```
 aws cloudformation deploy \
@@ -23,4 +23,4 @@ secrets.DB_USERNAME = ***
 secrets.DB_PASSWORD = ***
 ```
 
-Fare un push su master
+Fare un push su master.

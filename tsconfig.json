@@ -4,6 +4,7 @@
 	"compileroptions": {
 		"emitdecoratormetadata": true,
 		"experimentaldecorators": true,
+		"strictPropertyInitialization": false,
 		"ignoreDiagnostics": [1240]
 	},
 }

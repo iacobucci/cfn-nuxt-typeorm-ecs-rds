@@ -13,11 +13,6 @@ export default defineNuxtConfig({
 				}
 			}
 		},
-		imports: {
-			dirs: [
-				'./entities'
-			]
-		}
 	},
 
 	vite: {
@@ -27,6 +22,7 @@ export default defineNuxtConfig({
 				tsconfig: 'tsconfig.json',
 				experimentalDecorators: true,
 				emitDecoratorMetadata: true,
+				strictPropertyInitialization: false,
 			}
 		)],
 	},
@@ -36,6 +32,7 @@ export default defineNuxtConfig({
 			compilerOptions: {
 				experimentalDecorators: true,
 				emitDecoratorMetadata: true,
+				strictPropertyInitialization: false,
 			}
 		}
 	}

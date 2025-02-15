@@ -9,5 +9,6 @@
 	<p>Url del database: {{ data?.url }}</p>
 	<p>Provare le rotte /api/adduser?firstName=nome&lastName=cognome e /api/users</p>
 	<p>Prova di aggiornamento</p>
+	<NuxtPage />
   </div>
 </template>

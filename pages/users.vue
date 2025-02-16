@@ -4,7 +4,15 @@ import { plainToInstance } from "class-transformer"
 import { User } from "~/entities/User";
 const { data } = await useFetch('/api/users', { lazy: true });
 
-let users = data.value?.body.users.map(user => plainToInstance(User, user))
+// rende reattivi gli oggetti user, deserializzati con class-transformer
+let users = ref<User[]>(data.value?.body.users.map(user => plainToInstance(User, user)) || []);
+
+function addMockUser() {
+	let u = new User();
+	u.firstName = "luigi";
+	u.lastName = "rossi";
+	users.value.push(u);
+}
 
 </script>
 
@@ -13,6 +21,7 @@ let users = data.value?.body.users.map(user => plainToInstance(User, user))
 		<li v-for="user in users">
 			{{ user.fullName() }}
 		</li>
+		<button @click="addMockUser">Add mock</button>
 	</div>
 </template>
 

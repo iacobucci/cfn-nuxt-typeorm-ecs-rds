@@ -15,7 +15,6 @@ export default defineNuxtConfig({
 			}
 		}
 	},
-
 	vite: {
 		esbuild: false,
 		plugins: [typescript(

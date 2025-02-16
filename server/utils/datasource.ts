@@ -8,12 +8,29 @@ let entities = [User];
 
 let options: DataSourceOptions;
 
-if (process.env.NODE_ENV === "development") {
+if (process.env.NODE_ENV === "sqlite") {
 	options = {
 		type: "sqlite",
 		database: "database.sqlite",
 		synchronize: true,
 		logging: false,
+		entities,
+		migrations: [],
+		subscribers: [],
+	}
+}
+
+if (process.env.NODE_ENV === "development") {
+	options = {
+		type: "postgres",
+		host: "localhost",
+		database: "test",
+		port: 5432,
+		username: "test",
+		password: "test",
+		ssl: false,
+		synchronize: true,
+		logging: true,
 		entities,
 		migrations: [],
 		subscribers: [],
@@ -28,7 +45,7 @@ else {
 		port: parseInt(process.env.DB_PORT || "5432"),
 		username: process.env.DB_USERNAME,
 		password: process.env.DB_PASSWORD,
-		ssl: {rejectUnauthorized: false},
+		ssl: { rejectUnauthorized: false },
 		synchronize: true,
 		logging: true,
 		entities,

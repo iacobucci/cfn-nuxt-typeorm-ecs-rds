@@ -9,10 +9,11 @@ export default defineNuxtConfig({
 				tsconfigRaw: {
 					compilerOptions: {
 						experimentalDecorators: true,
+						target: "ES2022",
 					},
 				}
 			}
-		},
+		}
 	},
 
 	vite: {
@@ -20,6 +21,8 @@ export default defineNuxtConfig({
 		plugins: [typescript(
 			{
 				tsconfig: 'tsconfig.json',
+				target: "ES2022",
+				module: "ESNext",
 				experimentalDecorators: true,
 				emitDecoratorMetadata: true,
 				strictPropertyInitialization: false,
@@ -30,6 +33,8 @@ export default defineNuxtConfig({
 		tsConfig:
 		{
 			compilerOptions: {
+				target: "ES2022",
+				module: "ESNext",
 				experimentalDecorators: true,
 				emitDecoratorMetadata: true,
 				strictPropertyInitialization: false,

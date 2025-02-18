@@ -1,5 +1,6 @@
 import { SharedOneToMany, SharedManyToOne, SharedManyToMany, SharedEntity, SharedPrimaryGeneratedColumn, SharedColumn, SharedBaseEntity } from "~/utils/typeorm";
 import { Message } from "./Message";
+import { JoinTable } from "typeorm";
 
 @SharedEntity()
 export class User extends SharedBaseEntity {
@@ -19,6 +20,7 @@ export class User extends SharedBaseEntity {
 	public receivedMessages: Message[];
 
 	@SharedManyToMany(() => User)
+	@JoinTable({ name: "user_friends" })
 	public friends: User[];
 
 	constructor() {

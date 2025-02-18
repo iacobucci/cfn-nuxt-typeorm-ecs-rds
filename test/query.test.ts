@@ -4,24 +4,13 @@ import { describe, it, beforeAll, afterAll, expect } from "vitest";
 import { User } from "~/entities/User";
 import { Message } from "~/entities/Message";
 
-import { AppDataSource } from "~/server/utils/datasource";
+import { AppDataSource, initialize } from "~/server/utils/datasource";
 
-try {
-	if (!AppDataSource.isInitialized) {
-		await AppDataSource.initialize()
-		console.log('✅ Typeorm inizializzato', { type: AppDataSource.options.type, database: AppDataSource.options.database })
-	}
-} catch (error) {
-	console.error('❌ Errore inizializzazione Typeorm', error)
-	throw error
-}
+await initialize();
 
-// clean database
-
-afterAll(async () => {
-	// Fetch all the entities
-	await User.delete({});
-	await Message.delete({});
+beforeAll(async () => {
+	await AppDataSource.getRepository(User).delete({});
+	await AppDataSource.getRepository(Message).delete({});
 });
 
 // sintassi array destructuring, più concisa
@@ -87,12 +76,16 @@ it("create sample messages", async () => {
 });
 
 it("query messages from mario", async () => {
-	let messages = await Message.find({ where: { from: mario } });
+	let messages = await Message.find({
+		relations: ["from"],
+		where: { from: { id: mario.id } } // usando l'id si evita una ricorsione infinita
+	});
 
 	expect(messages.length).toBe(2);
 	expect(messages[0].message).toBe("Ciao Giuseppe");
 	expect(messages[1].message).toBe("Ciao Anna");
 });
+
 
 
 it("query messages from friends of giuseppe", async () => {

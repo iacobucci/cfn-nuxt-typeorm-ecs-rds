@@ -1,15 +1,15 @@
 import { User } from "./User";
-import { SharedManyToMany, SharedEntity, SharedPrimaryGeneratedColumn, SharedColumn, SharedBaseEntity, SharedOneToMany } from "~/utils/typeorm";
+import { ManyToMany, Entity, PrimaryGeneratedColumn, Column, BaseEntity, OneToMany } from "typeorm";
 
-@SharedEntity()
-export class Post extends SharedBaseEntity {
-	@SharedPrimaryGeneratedColumn({ type: "int" })
+@Entity()
+export class Post extends BaseEntity {
+	@PrimaryGeneratedColumn({ type: "int" })
 	public id: number = 0;
 
-	// @SharedManyToMany
+	// @ManyToMany
 	public tagged: User[];
 
-	@SharedColumn({ type: "varchar", length: 100 })
+	@Column({ type: "varchar", length: 100 })
 	public content: string = "";
 
 	constructor() {

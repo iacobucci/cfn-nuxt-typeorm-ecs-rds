@@ -1,26 +1,26 @@
-import { SharedOneToMany, SharedManyToOne, SharedManyToMany, SharedEntity, SharedPrimaryGeneratedColumn, SharedColumn, SharedBaseEntity } from "~/utils/typeorm";
+import { OneToMany, ManyToOne, ManyToMany, Entity, PrimaryGeneratedColumn, Column, BaseEntity } from "typeorm";
 import { Message } from "./Message";
 import { JoinTable } from "typeorm";
 
-@SharedEntity()
-export class User extends SharedBaseEntity {
-	@SharedPrimaryGeneratedColumn({ type: "int" })
+@Entity()
+export class User extends BaseEntity {
+	@PrimaryGeneratedColumn({ type: "int" })
 	public id: number = 0;
 
-	@SharedColumn({ type: "varchar", length: 100 })
+	@Column({ type: "varchar", length: 100 })
 	public firstName: string = "";
 
-	@SharedColumn({ type: "varchar", length: 100 })
+	@Column({ type: "varchar", length: 100 })
 	public lastName: string = "";
 
-	@SharedOneToMany(() => Message, message => message.from)
+	@OneToMany(() => Message, message => message.from)
 	public sentMessages: Message[];
 
-	@SharedOneToMany(() => Message, message => message.to)
+	@OneToMany(() => Message, message => message.to)
 	public receivedMessages: Message[];
 
-	@SharedManyToMany(() => User)
-	@JoinTable({ name: "user_friends" })
+	@ManyToMany(() => User)
+	@JoinTable({ name: "user_following" })
 	public following: User[];
 
 	constructor() {

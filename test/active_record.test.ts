@@ -1,5 +1,5 @@
-import "reflect-metadata"
-import { describe, it, beforeAll, afterAll, expect } from "vitest";
+import { describe, it, beforeAll, afterAll, beforeEach, afterEach, expect } from "vitest";
+import { setupTest } from "~/test/setup";
 
 import { User } from "~/entities/User";
 import { Message } from "~/entities/Message";
@@ -7,12 +7,8 @@ import { Message } from "~/entities/Message";
 import { AppDataSource, initialize } from "~/server/utils/datasource";
 import { In } from "typeorm";
 
-await initialize();
 
-beforeAll(async () => {
-	await AppDataSource.getRepository(User).delete({});
-	await AppDataSource.getRepository(Message).delete({});
-});
+beforeAll(setupTest);
 
 // sintassi array destructuring, più concisa
 let [mario, giuseppe, anna, maria, antonio]: User[] = []; // assegnamento orphan, inaggirabile
@@ -110,6 +106,23 @@ it("load user with their followed", async () => {
 	}
 
 	expect(user.following.length).toBe(2);
-	expect(user.following[0].id).toBe(giuseppe.id);
-	expect(user.following[1].id).toBe(anna.id);
+
+	// expect to be giuseppe and anna, but order is not guaranteed
+	let ids = user.following.map(u => u.id);
+	expect(ids).toContain(giuseppe.id);
+	expect(ids).toContain(anna.id);
 });
+
+it("load user with their followers", async () => {
+
+	let user = await User.find({ where: { following: { id: mario.id } }, relations: { following: true } });
+
+	expect(user.length).toBe(2);
+
+	// expect to be giuseppe and anna, but order is not guaranteed
+	let ids = user.map(u => u.id);
+	expect(ids).toContain(giuseppe.id);
+	expect(ids).toContain(anna.id);
+});
+
+

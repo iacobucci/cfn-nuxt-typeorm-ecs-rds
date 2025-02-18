@@ -1,24 +1,24 @@
 import { User } from "./User";
-import { SharedManyToOne, SharedEntity, SharedPrimaryGeneratedColumn, SharedColumn, SharedBaseEntity } from "~/utils/typeorm";
+import { ManyToOne, Entity, PrimaryGeneratedColumn, Column, BaseEntity } from "typeorm";
 
-@SharedEntity()
-export class Message extends SharedBaseEntity {
-	@SharedPrimaryGeneratedColumn({ type: "int" })
+@Entity()
+export class Message extends BaseEntity {
+	@PrimaryGeneratedColumn({ type: "int" })
 	public id: number = 0;
 
-	@SharedManyToOne(() => User, user => user.sentMessages, { onDelete: "CASCADE" })
+	@ManyToOne(() => User, user => user.sentMessages, { onDelete: "CASCADE" })
 	public from: User;
 
-	@SharedManyToOne(() => User, user => user.receivedMessages, { onDelete: "CASCADE" })
+	@ManyToOne(() => User, user => user.receivedMessages, { onDelete: "CASCADE" })
 	public to: User;
 
-	@SharedColumn({ type: "bool", default: false })
+	@Column({ type: "bool", default: false })
 	public seen: boolean;
 
-	@SharedColumn({ type: "date", default: () => "CURRENT_TIMESTAMP" })
+	@Column({ type: "date", default: () => "CURRENT_TIMESTAMP" })
 	public date: Date;
 
-	@SharedColumn({ type: "varchar", length: 100 })
+	@Column({ type: "varchar", length: 100 })
 	public content: string;
 
 	constructor() {

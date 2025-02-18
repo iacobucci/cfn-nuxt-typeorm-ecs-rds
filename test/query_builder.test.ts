@@ -65,17 +65,17 @@ it("create sample messages", async () => {
 	m4.to = anna;
 	m4.content = "Ciao Anna";
 
-	await AppDataSource.getRepository(Message).save([m1, m2, m3]);
+	await AppDataSource.getRepository(Message).save([m1, m2, m3, m4]);
 
-	expect(await Message.count()).toBe(3);
+	expect(await Message.count()).toBe(4);
 
 });
 
 it("query messages from mario", async () => {
-	let messages = await Message.find({
-		relations: { from: true },
-		where: { from: { id: mario.id } } // usando l'id si evita una ricorsione infinita
-	});
+	const messages = await Message.createQueryBuilder("message")
+		.leftJoinAndSelect("message.from", "from")
+		.where("from.id = :marioId", { marioId: mario.id })
+		.getMany();
 
 	expect(messages.length).toBe(2);
 	expect(messages[0].content).toBe("Ciao Giuseppe");
@@ -83,13 +83,14 @@ it("query messages from mario", async () => {
 });
 
 it("query messages to anna from users that anna is following", async () => {
-	let messages = await Message.find({
-		relations: { to: true, from: true },
-		where: {
-			to: { id: anna.id },
-			from: In(anna.following.map(f => f.id))
-		}
-	});
+	const messages = await Message.createQueryBuilder("message")
+		.leftJoinAndSelect("message.to", "to")
+		.leftJoinAndSelect("message.from", "from")
+		.where("to.id = :annaId", { annaId: anna.id })
+		.andWhere("from.id IN (:...followingIds)", {
+			followingIds: anna.following.map(f => f.id),
+		})
+		.getMany();
 
 	expect(messages.length).toBe(1);
 	expect(messages[0].content).toBe("Ciao Anna");
@@ -97,8 +98,10 @@ it("query messages to anna from users that anna is following", async () => {
 });
 
 it("load user with their followed", async () => {
-
-	let user = await User.findOne({ where: { id: mario.id }, relations: { following: true } });
+	const user = await User.createQueryBuilder("user")
+		.leftJoinAndSelect("user.following", "following")
+		.where("user.id = :marioId", { marioId: mario.id })
+		.getOne();
 
 	if (!user) {
 		throw new Error("User not found");
@@ -106,22 +109,23 @@ it("load user with their followed", async () => {
 
 	expect(user.following.length).toBe(2);
 
-	// expect to be giuseppe and anna, but order is not guaranteed
-	let ids = user.following.map(u => u.id);
+	const ids = user.following.map(u => u.id);
 	expect(ids).toContain(giuseppe.id);
 	expect(ids).toContain(anna.id);
 });
 
 it("load user with their followers", async () => {
+	const users = await User.createQueryBuilder("user")
+		.leftJoinAndSelect("user.following", "following")
+		.where("following.id = :marioId", { marioId: mario.id })
+		.getMany();
 
-	let user = await User.find({ where: { following: { id: mario.id } }, relations: { following: true } });
+	expect(users.length).toBe(2);
 
-	expect(user.length).toBe(2);
-
-	// expect to be giuseppe and anna, but order is not guaranteed
-	let ids = user.map(u => u.id);
+	const ids = users.map(u => u.id);
 	expect(ids).toContain(giuseppe.id);
 	expect(ids).toContain(anna.id);
 });
+
 
 

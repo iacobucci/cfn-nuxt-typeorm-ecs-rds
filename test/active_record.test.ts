@@ -17,28 +17,35 @@ it("create sample users", async () => {
 	mario = new User();
 	mario.firstName = "Mario";
 	mario.lastName = "Rossi";
+	await mario.save();
 
 	giuseppe = new User();
 	giuseppe.firstName = "Giuseppe";
 	giuseppe.lastName = "Verdi";
+	await giuseppe.save();
 
 	anna = new User();
 	anna.firstName = "Anna";
 	anna.lastName = "Bianchi";
+	await anna.save();
 
 	maria = new User();
 	maria.firstName = "Maria";
 	maria.lastName = "Neri";
+	await maria.save();
 
 	antonio = new User();
 	antonio.firstName = "Antonio";
 	antonio.lastName = "Neri";
+	await antonio.save();
 
 	mario.following = [giuseppe, anna];
 	giuseppe.following = [mario, anna];
 	anna.following = [mario];
 
-	await AppDataSource.getRepository(User).save([mario, giuseppe, anna, maria, antonio]);
+	await mario.save();
+	await giuseppe.save();
+	await anna.save();
 
 	expect(await User.count()).toBe(5);
 });
@@ -50,26 +57,27 @@ it("create sample messages", async () => {
 	m1.from = mario;
 	m1.to = giuseppe;
 	m1.content = "Ciao Giuseppe";
+	await m1.save();
 
 	m2 = new Message();
 	m2.from = giuseppe;
 	m2.to = mario;
 	m2.content = "Ciao Mario";
+	await m2.save();
 
 	m3 = new Message();
 	m3.from = mario;
 	m3.to = anna;
 	m3.content = "Ciao Anna";
+	await m3.save();
 
 	m4 = new Message();
 	m4.from = giuseppe;
 	m4.to = anna;
 	m4.content = "Ciao Anna";
+	await m4.save();
 
-	await AppDataSource.getRepository(Message).save([m1, m2, m3]);
-
-	expect(await Message.count()).toBe(3);
-
+	expect(await Message.count()).toBe(4);
 });
 
 it("query messages from mario", async () => {

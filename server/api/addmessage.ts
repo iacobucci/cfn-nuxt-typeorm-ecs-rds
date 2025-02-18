@@ -22,7 +22,7 @@ export default defineEventHandler(async event => {
 		const newMessage = new Message();
 		newMessage.from = from as User;
 		newMessage.to = to as User;
-		newMessage.message = message as string;
+		newMessage.content = message as string;
 
 		await newMessage.save();
 

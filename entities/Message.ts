@@ -19,13 +19,13 @@ export class Message extends SharedBaseEntity {
 	public date: Date;
 
 	@SharedColumn({ type: "varchar", length: 100 })
-	public message: string;
+	public content: string;
 
 	constructor() {
 		super();
 	}
 
 	public representation(): string {
-		return `${this.from.fullName()} -> ${this.to.fullName()}: ${this.message}`;
+		return `${this.from.fullName()} -> ${this.to.fullName()}: ${this.content}`;
 	}
 }

@@ -21,7 +21,7 @@ export class User extends SharedBaseEntity {
 
 	@SharedManyToMany(() => User)
 	@JoinTable({ name: "user_friends" })
-	public friends: User[];
+	public following: User[];
 
 	constructor() {
 		super();

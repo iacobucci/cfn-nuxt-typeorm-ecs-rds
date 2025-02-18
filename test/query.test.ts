@@ -5,6 +5,7 @@ import { User } from "~/entities/User";
 import { Message } from "~/entities/Message";
 
 import { AppDataSource, initialize } from "~/server/utils/datasource";
+import { In } from "typeorm";
 
 await initialize();
 
@@ -37,9 +38,9 @@ it("create sample users", async () => {
 	antonio.firstName = "Antonio";
 	antonio.lastName = "Neri";
 
-	mario.friends = [giuseppe, anna];
-	giuseppe.friends = [mario];
-	anna.friends = [anna];
+	mario.following = [giuseppe, anna];
+	giuseppe.following = [mario, anna];
+	anna.following = [mario];
 
 	await AppDataSource.getRepository(User).save([mario, giuseppe, anna, maria, antonio]);
 
@@ -52,22 +53,22 @@ it("create sample messages", async () => {
 	m1 = new Message();
 	m1.from = mario;
 	m1.to = giuseppe;
-	m1.message = "Ciao Giuseppe";
+	m1.content = "Ciao Giuseppe";
 
 	m2 = new Message();
 	m2.from = giuseppe;
 	m2.to = mario;
-	m2.message = "Ciao Mario";
+	m2.content = "Ciao Mario";
 
 	m3 = new Message();
 	m3.from = mario;
 	m3.to = anna;
-	m3.message = "Ciao Anna";
+	m3.content = "Ciao Anna";
 
 	m4 = new Message();
 	m4.from = giuseppe;
 	m4.to = anna;
-	m4.message = "Ciao Anna";
+	m4.content = "Ciao Anna";
 
 	await AppDataSource.getRepository(Message).save([m1, m2, m3]);
 
@@ -77,17 +78,38 @@ it("create sample messages", async () => {
 
 it("query messages from mario", async () => {
 	let messages = await Message.find({
-		relations: ["from"],
+		relations: { from: true },
 		where: { from: { id: mario.id } } // usando l'id si evita una ricorsione infinita
 	});
 
 	expect(messages.length).toBe(2);
-	expect(messages[0].message).toBe("Ciao Giuseppe");
-	expect(messages[1].message).toBe("Ciao Anna");
+	expect(messages[0].content).toBe("Ciao Giuseppe");
+	expect(messages[1].content).toBe("Ciao Anna");
 });
 
+it("query messages to anna from users that anna is following", async () => {
+	let messages = await Message.find({
+		relations: { to: true, from: true },
+		where: {
+			to: { id: anna.id },
+			from: In(anna.following.map(f => f.id))
+		}
+	});
 
+	expect(messages.length).toBe(1);
+	expect(messages[0].content).toBe("Ciao Anna");
+	expect(messages[0].from.id).toBe(mario.id);
+});
 
-it("query messages from friends of giuseppe", async () => {
-	// let messages = await Message.find({ where: { from: giuseppe.friends } });
+it("load user with their followed", async () => {
+
+	let user = await User.findOne({ where: { id: mario.id }, relations: { following: true } });
+
+	if (!user) {
+		throw new Error("User not found");
+	}
+
+	expect(user.following.length).toBe(2);
+	expect(user.following[0].id).toBe(giuseppe.id);
+	expect(user.following[1].id).toBe(anna.id);
 });

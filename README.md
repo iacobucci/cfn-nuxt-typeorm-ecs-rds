@@ -1,5 +1,24 @@
 # Aws Nuxt Typeorm
 
+## Modalità di sviluppo
+
+Avviare il database postgres per lo sviluppo.
+
+```bash
+cd postgres
+docker build -t postgres_dev .
+docker run -d --name postgres_dev -p 5432:5432 postgres_dev
+```
+
+Avviare il server Nuxt.
+
+```bash
+npm install
+npx nuxi dev
+```
+
+## Creazione dell'infrastruttura AWS
+
 Avviare la creazione dello stack che effettua la connessione OIDC alla repository di github di interesse.
 
 ```

@@ -1,5 +1,5 @@
 import { User } from "~/entities/User"
-import { Message } from "~/entities/Message.ts"
+import { Message } from "~/entities/Message"
 
 export default defineEventHandler(async event => {
 	// ottieni i parametri from, to e message della richiesta

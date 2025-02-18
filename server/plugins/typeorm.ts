@@ -6,7 +6,7 @@ export default defineNitroPlugin(async () => {
 	try {
 		if (!AppDataSource.isInitialized) {
 			await AppDataSource.initialize()
-			console.log('✅ Typeorm inizializzato')
+			console.log('✅ Typeorm inizializzato', { type: AppDataSource.options.type, database: AppDataSource.options.database })
 		}
 	} catch (error) {
 		console.error('❌ Errore inizializzazione Typeorm', error)

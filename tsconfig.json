@@ -7,6 +7,9 @@
 		"emitdecoratormetadata": true,
 		"experimentaldecorators": true,
 		"strictPropertyInitialization": false,
-		"ignoreDiagnostics": [1240]
+		"ignoreDiagnostics": [
+			1240
+		],
+		"baseUrl": "./.nuxt/",
 	},
 }

@@ -1,5 +1,12 @@
 {
 	"cSpell.words": [
+		"inaggirabile",
 		"typeorm"
-	]
+	],
+	"files.exclude": {
+		".git": true,
+		"node_modules": true,
+		".nuxt": true,
+		".output": true
+	}
 }

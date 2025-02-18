@@ -3,6 +3,8 @@ import "reflect-metadata";
 
 export default defineNuxtConfig({
 	compatibilityDate: '2025-02-12',
+	modules:
+		["@nuxtjs/tailwindcss"],
 	nitro: {
 		esbuild: {
 			options: {

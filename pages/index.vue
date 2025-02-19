@@ -4,7 +4,7 @@ import { CounterWithIncrementAndDecrement } from '#components';
 </script>
 
 <template>
-	<div>
+	<div class="min-h-screen flex flex-col items-center justify-center">
 		<p>Page: index</p>
 		<CounterWithIncrement />
 		<CounterWithIncrementAndDecrement />

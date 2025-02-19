@@ -1,14 +1,29 @@
 <script setup lang="ts">
-const { count, increment } = useCounter();
+import { Button } from '@/components/ui/button';
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardFooter,
+	CardHeader,
+	CardTitle,
+} from '@/components/ui/card'
+const { count, increment} = useCounter();
 </script>
 
 
 <template>
-	<div>
-		<p>Component: counterWithIncrement</p>
-		<p>Count: {{ count }}</p>
-		<Button @click="increment">Increment</Button>
-	</div>
+	<Card>
+		<CardHeader>
+			<CardTitle>Counter with increment</CardTitle>
+		</CardHeader>
+		<CardContent>
+			<p>Count: {{ count }}</p>
+		</CardContent>
+		<CardFooter class="flex justify-center">
+			<Button @click="increment">Increment</Button>
+		</CardFooter>
+	</Card>
 </template>
 
 <style scoped></style>

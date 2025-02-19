@@ -4,7 +4,7 @@
 
 const { $client } = useNuxtApp()
 
-let hello = await $client.clog.useLazyQuery({ text: 'client' }) // query non bloccante al caricamento della pagina da un NuxtLink
+let hello = await $client.clog.useQuery({ text: 'client' }, { lazy: true }) // query non bloccante al caricamento della pagina da un NuxtLink
 
 let l = ref<{ text: string }[]>([])
 

@@ -8,5 +8,17 @@
 		"node_modules": true,
 		".nuxt": true,
 		".output": true
-	}
+	},
+	"sqltools.connections": [
+		{
+			"previewLimit": 50,
+			"server": "localhost",
+			"port": 5432,
+			"driver": "PostgreSQL",
+			"name": "dev",
+			"database": "dev",
+			"username": "dev",
+			"password": "dev"
+		}
+	]
 }

@@ -1,4 +1,6 @@
 <script setup>
+import Sidebar from '~/components/sidebar.vue';
+
 useHead({
 	script: [
 		{
@@ -11,7 +13,7 @@ useHead({
 
 <template>
 	<div class="flex items-start gap-5">
-		<p>Sidebar</p>
+		<Sidebar />
 		<div>
 			<slot />
 		</div>

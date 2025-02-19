@@ -10,10 +10,13 @@ export const appRouter = router({
 		)
 		.query(async ({ input }) => {
 			// wait for 1 second
+			let start_time = `${new Date().toISOString()}`
+			console.log(`started request at ${start_time}`)
 			await new Promise((resolve) => setTimeout(resolve, 1000))
-			console.log("clog")
+			let end_time = `${new Date().toISOString()}`
+			console.log(`finished request at ${end_time}`)
 			return {
-				greeting: `hello ${input?.text}, its ${new Date().toISOString()}`,
+				greeting: `hello ${input?.text}, the last request started at ${start_time}`,
 			}
 		}),
 })

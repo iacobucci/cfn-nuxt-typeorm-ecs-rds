@@ -1,4 +1,4 @@
-// import typescript from '@rollup/plugin-typescript';
+import typescript from '@rollup/plugin-typescript';
 import "reflect-metadata";
 
 export default defineNuxtConfig({
@@ -8,14 +8,7 @@ export default defineNuxtConfig({
 		["@nuxtjs/tailwindcss", 'shadcn-nuxt'],
 
 	shadcn: {
-		/**
-						* Prefix for all the imported component
-						*/
 		prefix: '',
-		/**
-						* Directory that the component lives in.
-						* @default "./components/ui"
-						*/
 		componentDir: './components/ui'
 	},
 
@@ -36,8 +29,25 @@ export default defineNuxtConfig({
 		}
 	},
 
+	vite: {
+		server: {
+			hmr: true,
+		},
+		// esbuild: false,
+		// plugins: [typescript( // necessario per usare gli stub di typeORM nel client
+		// 	{
+		// 		tsconfig: 'tsconfig.json',
+		// 		target: "ES2022",
+		// 		module: "ESNext",
+		// 		experimentalDecorators: true,
+		// 		emitDecoratorMetadata: true,
+		// 		strictPropertyInitialization: false,
+		// 	}
+		// )],
+	},
+
 	typescript: {
-		tsConfig:
+		tsConfig: // necessario come workaround per vue-language-server
 		{
 			compilerOptions: {
 				target: "ES2022",

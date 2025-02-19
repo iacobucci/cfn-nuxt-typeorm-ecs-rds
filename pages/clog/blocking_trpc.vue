@@ -4,7 +4,7 @@
 
 const { $client } = useNuxtApp()
 
-let hello = await $client.clog.useQuery({ text: 'client' })
+let hello = await $client.clog.useQuery({ text: 'client' }) // query bloccante al caricamento della pagina da un NuxtLink
 
 let l = ref<{ text: string }[]>([])
 
@@ -14,6 +14,7 @@ let l = ref<{ text: string }[]>([])
 	<div>
 		<p>{{ hello.data }}</p>
 		<button @click="() => { hello.refresh(); l.push({ text: `${new Date().toISOString()}` }) }">Refetch</button>
+		<!-- refresh sempre non bloccante -->
 		<li v-for="item in l">{{ item.text }}</li>
 	</div>
 </template>

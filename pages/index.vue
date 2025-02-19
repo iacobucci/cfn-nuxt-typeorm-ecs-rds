@@ -1,10 +1,13 @@
 <script setup lang="ts">
-
+import { CounterWithIncrement } from '#components';
+import { CounterWithIncrementAndDecrement } from '#components';
 </script>
 
 <template>
 	<div>
-		<p>index</p>
+		<p>Page: index</p>
+		<CounterWithIncrement />
+		<CounterWithIncrementAndDecrement />
 	</div>
 </template>
 

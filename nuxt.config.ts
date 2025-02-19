@@ -1,10 +1,28 @@
-import typescript from '@rollup/plugin-typescript';
+// import typescript from '@rollup/plugin-typescript';
 import "reflect-metadata";
 
 export default defineNuxtConfig({
 	compatibilityDate: '2025-02-12',
+
 	modules:
-		["@nuxtjs/tailwindcss"],
+		["@nuxtjs/tailwindcss", 'shadcn-nuxt'],
+
+	shadcn: {
+		/**
+						* Prefix for all the imported component
+						*/
+		prefix: '',
+		/**
+						* Directory that the component lives in.
+						* @default "./components/ui"
+						*/
+		componentDir: './components/ui'
+	},
+
+	build: {
+		transpile: ['trpc-nuxt']
+	},
+
 	nitro: {
 		esbuild: {
 			options: {
@@ -17,19 +35,7 @@ export default defineNuxtConfig({
 			}
 		}
 	},
-	vite: {
-		esbuild: false,
-		plugins: [typescript(
-			{
-				tsconfig: 'tsconfig.json',
-				target: "ES2022",
-				module: "ESNext",
-				experimentalDecorators: true,
-				emitDecoratorMetadata: true,
-				strictPropertyInitialization: false,
-			}
-		)],
-	},
+
 	typescript: {
 		tsConfig:
 		{
@@ -41,5 +47,9 @@ export default defineNuxtConfig({
 				strictPropertyInitialization: false,
 			}
 		}
+	},
+
+	devtools: {
+		enabled: true
 	}
 })

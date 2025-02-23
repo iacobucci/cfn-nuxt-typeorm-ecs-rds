@@ -13,7 +13,7 @@ const props = withDefaults(defineProps<{
 })
 
 const handleFruitChange = (value: AcceptableValue) => {
-  emit('update:selected', value)
+	console.log('handleFruitChange', value)
 }
 </script>
 

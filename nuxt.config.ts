@@ -4,12 +4,16 @@ import "reflect-metadata";
 export default defineNuxtConfig({
 	compatibilityDate: '2025-02-12',
 
+	features: {
+		inlineStyles: false,
+	},
+
 	modules:
 		["@nuxtjs/tailwindcss", 'shadcn-nuxt'],
 
 	shadcn: {
 		prefix: '',
-		componentDir: './components/ui'
+		componentDir: './components/ui',
 	},
 
 	build: {
@@ -33,7 +37,7 @@ export default defineNuxtConfig({
 		server: {
 			hmr: true,
 		},
-		// esbuild: false,
+		esbuild: false, // necessario per l'utilizzo dei decoratori typeORM
 		// plugins: [typescript( // necessario per usare gli stub di typeORM nel client
 		// 	{
 		// 		tsconfig: 'tsconfig.json',
@@ -60,6 +64,10 @@ export default defineNuxtConfig({
 	},
 
 	devtools: {
-		enabled: true
+		enabled: true,
+
+		timeline: {
+			enabled: true
+		}
 	}
 })

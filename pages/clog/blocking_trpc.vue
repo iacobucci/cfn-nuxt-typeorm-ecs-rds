@@ -12,7 +12,7 @@ let l = ref<{ text: string }[]>([])
 
 <template>
 	<div>
-		<p>{{ hello.data }}</p>
+		<p>{{ hello.data.value?.greeting }}</p>
 		<button @click="() => { hello.refresh(); l.push({ text: `${new Date().toISOString()}` }) }">Refetch</button>
 		<!-- refresh sempre non bloccante -->
 		<li v-for="item in l">{{ item.text }}</li>

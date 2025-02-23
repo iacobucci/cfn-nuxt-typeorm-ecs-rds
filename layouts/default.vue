@@ -1,6 +1,4 @@
 <script setup>
-import Sidebar from '~/components/sidebar.vue';
-
 useHead({
 	script: [
 		{

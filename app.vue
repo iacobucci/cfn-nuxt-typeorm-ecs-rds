@@ -1,14 +1,14 @@
 <script setup lang="ts">
-// const { data } = await useFetch("/api/getinfo", { lazy: true });
+useSeoMeta({
+	title: 'Applicazione Nuxt',
+	description: 'Applicazione di esempio',
+	ogTitle: 'Applicazione Nuxt',
+	ogDescription: 'Applicazione di esempio',
+	ogImage: '/img/image.png'
+});
 </script>
 
 <template>
-	<!-- <p>{{ data?.env }} </p>
-	<p>{{ data?.hostname }} </p>
-	<p>{{ data?.port }} </p>
-	<p>{{ data?.name }} </p>
-	<p>{{ data?.username }} </p>
-	<p>{{ data?.password }} </p> -->
 	<div>
 		<NuxtLayout>
 			<NuxtPage />

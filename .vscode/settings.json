@@ -1,7 +1,9 @@
 {
 	"cSpell.words": [
 		"inaggirabile",
-		"typeorm"
+		"Nuxt",
+		"typeorm",
+		"Heinemeier"
 	],
 	"files.exclude": {
 		".git": true,

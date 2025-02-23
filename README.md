@@ -23,12 +23,14 @@ Avviare la creazione dello stack che effettua la connessione OIDC alla
 repository di github di interesse.
 
 ```
+export GIHTUB_ORG=iacobucci
+export REPOSITORY_NAME=aws-nuxt-typeorm
 aws cloudformation deploy \
 	--stack-name github-actions-cloudformation-deploy-setup \
 	--template-file cloudformation/setup.yml \
 	--capabilities CAPABILITY_NAMED_IAM \
 	--region eu-central-1 \
-	--parameter-overrides GitHubOrg=iacobucci RepositoryName=aws-nuxt-typeorm
+	--parameter-overrides GitHubOrg=$GITHUB_ORG RepositoryName=$REPOSITORY_NAME
 ```
 
 Creare una nuova repository github, pubblica o privata.

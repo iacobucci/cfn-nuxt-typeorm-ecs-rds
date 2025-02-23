@@ -24,4 +24,8 @@ logs
 !.env.example
 
 # Database files
+postgres
 *.sqlite
+
+# Test results
+test-results

@@ -1,10 +1,17 @@
 <script setup lang="ts">
-const route = useRoute()
+import { MyCalendar } from '@/components/ui/calendar'
+
+// listen to emitted events
 </script>
 
 <template>
-  <div>
-    <h1>Nuxt Routing set up successfully!</h1>
-    <p>Current route: {{ route.path }}</p>
-  </div>
+	<div class="min-h-screen flex flex-col items-center justify-center">
+		<p>Page: index</p>
+		<SelectFruit />
+		<MyCalendar />
+		<CounterWithIncrement />
+		<CounterWithIncrementAndDecrement />
+	</div>
 </template>
+
+<style scoped></style>

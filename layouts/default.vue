@@ -11,9 +11,11 @@ useHead({
 
 <template>
 	<div class="flex items-start gap-5">
-		<Sidebar />
-		<div>
-			<slot />
-		</div>
+
+		<!-- <SidebarProvider>
+			<AppSidebar /> -->
+		<slot />
+		<!-- </SidebarProvider> -->
+
 	</div>
 </template>

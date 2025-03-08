@@ -9,10 +9,7 @@ export class User extends BaseEntity {
 	id: number = 0;
 
 	@Column({ type: "varchar", length: 100 })
-	firstName: string = "";
-
-	@Column({ type: "varchar", length: 100 })
-	lastName: string = "";
+	username: string = "";
 
 	@OneToMany(() => Message, message => message.from)
 	sentMessages: Message[];
@@ -39,9 +36,5 @@ export class User extends BaseEntity {
 
 	constructor() {
 		super();
-	}
-
-	fullName(): string {
-		return `${this.firstName} ${this.lastName}`;
 	}
 }

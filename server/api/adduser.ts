@@ -18,8 +18,8 @@ export default defineEventHandler(async (event) => {
 	else {
 		// crea un nuovo utente
 		const user = new User();
-		user.firstName = firstName as string;
-		user.lastName = lastName as string;
+		// user.firstName = firstName as string;
+		// user.lastName = lastName as string;
 
 		await user.save();
 

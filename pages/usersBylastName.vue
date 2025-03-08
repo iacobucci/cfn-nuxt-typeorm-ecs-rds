@@ -14,14 +14,13 @@ const usersByLastName = reactive<UsersByLastName>({
 
 async function fetchUsers() {
 	const data = await $fetch('/api/usersbylastname', {
-		lazy: true, method: 'POST', 
+		lazy: true, method: 'POST',
 		// l'abbinamento dell'interfaccia usersByLastName è lasciato allo sviluppatore, non viene controllato dal compilatore
 		body: usersByLastName
 	});
 	console.log(data.body.users);
 	users.value = data.body.users.map(user => plainToInstance(User, user));
 }
-
 
 </script>
 

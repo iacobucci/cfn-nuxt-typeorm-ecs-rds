@@ -1,33 +1,47 @@
 import { OneToMany, ManyToOne, ManyToMany, Entity, PrimaryGeneratedColumn, Column, BaseEntity } from "typeorm";
 import { Message } from "./Message";
+import { Post } from "./Post";
 import { JoinTable } from "typeorm";
 
 @Entity()
 export class User extends BaseEntity {
 	@PrimaryGeneratedColumn({ type: "int" })
-	public id: number = 0;
+	id: number = 0;
 
 	@Column({ type: "varchar", length: 100 })
-	public firstName: string = "";
+	firstName: string = "";
 
 	@Column({ type: "varchar", length: 100 })
-	public lastName: string = "";
+	lastName: string = "";
 
 	@OneToMany(() => Message, message => message.from)
-	public sentMessages: Message[];
+	sentMessages: Message[];
 
 	@OneToMany(() => Message, message => message.to)
-	public receivedMessages: Message[];
+	receivedMessages: Message[];
 
-	@ManyToMany(() => User)
+	@OneToMany(() => Post, (post) => post.author)
+	posts: Post[];
+
+	@ManyToMany(() => Post, (post) => post.likedBy)
+	likedPosts: Post[];
+
+	@ManyToMany(() => User, (user) => user.friends)
+	@JoinTable({ name: "user_friends" })
+	friends: User[];
+
+	@ManyToMany(() => User, (user) => user.followers)
 	@JoinTable({ name: "user_following" })
-	public following: User[];
+	following: User[];
+
+	@ManyToMany(() => User, (user) => user.following)
+	followers: User[];
 
 	constructor() {
 		super();
 	}
 
-	public fullName(): string {
+	fullName(): string {
 		return `${this.firstName} ${this.lastName}`;
 	}
 }

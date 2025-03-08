@@ -7,6 +7,7 @@ const route = useRoute()
 
 console.log(route.params.num)
 
+
 </script>
 
 <template>

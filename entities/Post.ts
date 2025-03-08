@@ -1,16 +1,21 @@
 import { User } from "./User";
-import { ManyToMany, Entity, PrimaryGeneratedColumn, Column, BaseEntity, OneToMany } from "typeorm";
+import { ManyToMany, Entity, PrimaryGeneratedColumn, Column, BaseEntity, JoinTable, ManyToOne, JoinColumn } from "typeorm";
 
 @Entity()
 export class Post extends BaseEntity {
 	@PrimaryGeneratedColumn({ type: "int" })
-	public id: number = 0;
-
-	// @ManyToMany
-	public tagged: User[];
+	id: number = 0;
 
 	@Column({ type: "varchar", length: 100 })
-	public content: string = "";
+	content: string = "";
+
+	@ManyToOne(() => User, (user) => user.posts)
+	@JoinColumn()
+	author: User;
+
+	@ManyToMany(() => User, (user) => user.likedPosts)
+	@JoinTable()
+	likedBy: User[];
 
 	constructor() {
 		super();

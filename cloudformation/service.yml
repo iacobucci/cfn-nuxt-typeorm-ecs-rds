@@ -63,6 +63,7 @@ Parameters:
   DBUsername:
     Type: String
     Description: The username for the database
+    NoEcho: true
   DBPassword:
     Type: String
     NoEcho: true
@@ -90,20 +91,20 @@ Resources:
           ToPort: !Ref "DBPort"
           SourceSecurityGroupId:
             Fn::ImportValue: !Sub ${EnvironmentName}:ContainerSecurityGroup
-        # - IpProtocol: tcp
-        #   FromPort: !Ref "DBPort"
-        #   ToPort: !Ref "DBPort"
-        #   CidrIp: 0.0.0.0/0 # ⚠️ Accessibile da internet per debug
+        - IpProtocol: tcp
+          FromPort: !Ref "DBPort"
+          ToPort: !Ref "DBPort"
+          CidrIp: 0.0.0.0/0 # ⚠️ Accessibile da internet per debug
       SecurityGroupEgress:
         - IpProtocol: tcp
           FromPort: !Ref "DBPort"
           ToPort: !Ref "DBPort"
           DestinationSecurityGroupId:
             Fn::ImportValue: !Sub ${EnvironmentName}:ContainerSecurityGroup
-        # - IpProtocol: tcp
-        #   FromPort: !Ref "DBPort"
-        #   ToPort: !Ref "DBPort"
-        #   CidrIp: 0.0.0.0/0 # ⚠️
+        - IpProtocol: tcp
+          FromPort: !Ref "DBPort"
+          ToPort: !Ref "DBPort"
+          CidrIp: 0.0.0.0/0 # ⚠️
 
   RDSInstance:
     Type: AWS::RDS::DBInstance

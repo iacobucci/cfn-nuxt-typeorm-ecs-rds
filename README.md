@@ -24,7 +24,7 @@ repository di github di interesse.
 
 ```
 export GIHTUB_ORG=iacobucci
-export REPOSITORY_NAME=aws-nuxt-typeorm
+export REPOSITORY_NAME=aws-nuxt-typeorm-ecs
 aws cloudformation deploy \
 	--stack-name github-actions-cloudformation-deploy-setup \
 	--template-file cloudformation/setup.yml \

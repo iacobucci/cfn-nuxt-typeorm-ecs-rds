@@ -10,24 +10,28 @@ import { In } from "typeorm";
 
 beforeAll(setupTest);
 
-// sintassi array destructuring, più concisa
-let [mario, giuseppe, anna, maria, antonio]: User[] = []; // assegnamento orphan, inaggirabile
+let [mario, giuseppe, anna, maria, antonio]: User[] = [];
 
 it("create sample users", async () => {
 	mario = new User();
 	mario.username = "mario";
+	await mario.save();
 
 	giuseppe = new User();
 	giuseppe.username = "giuseppe";
+	await giuseppe.save();
 
 	anna = new User();
 	anna.username = "anna";
+	await anna.save();
 
 	maria = new User();
 	maria.username = "maria";
+	await maria.save();
 
 	antonio = new User();
 	antonio.username = "antonio";
+	await antonio.save();
 
 	mario.following = [giuseppe, anna];
 	giuseppe.following = [mario, anna];

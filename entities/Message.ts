@@ -26,6 +26,6 @@ export class Message extends BaseEntity {
 	}
 
 	representation(): string {
-		return `${this.from.fullName()} -> ${this.to.fullName()}: ${this.content}`;
+		return `${this.from.username} -> ${this.to.username}: ${this.content}`;
 	}
 }

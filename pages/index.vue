@@ -1,14 +1,7 @@
 <script setup lang="ts">
 
-// listen to emitted events
-</script>
+useRouter().push("/users");
 
-<template>
-	<div class="min-h-screen flex flex-col items-center justify-center">
-		<p>Page: index</p>
-		<CounterWithIncrement />
-		<CounterWithIncrementAndDecrement />
-	</div>
-</template>
+</script>
 
 <style scoped></style>

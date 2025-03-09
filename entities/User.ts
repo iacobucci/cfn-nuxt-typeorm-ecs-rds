@@ -27,12 +27,16 @@ export class User extends BaseEntity {
 	@JoinTable({ name: "user_friends" })
 	friends: User[];
 
-	@ManyToMany(() => User, (user) => user.followers)
+	@ManyToMany(() => User, (user) => user.followers, { cascade: true })
 	@JoinTable({ name: "user_following" })
 	following: User[];
 
 	@ManyToMany(() => User, (user) => user.following)
 	followers: User[];
+
+	representation(): string {
+		return "@" + this.username;
+	}
 
 	constructor() {
 		super();

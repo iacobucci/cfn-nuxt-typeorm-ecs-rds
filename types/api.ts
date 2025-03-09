@@ -5,3 +5,7 @@ export interface UsersByLastName {
 export interface UsersWhoLikedPostsByAuthors {
 	usernames: string[];
 }
+
+export interface PostsByUser {
+	username: string;
+}

@@ -9,7 +9,7 @@ export default defineNuxtConfig({
 	},
 
 	modules:
-		["@nuxtjs/tailwindcss", 'shadcn-nuxt'],
+		["@nuxtjs/tailwindcss", 'shadcn-nuxt', 'nuxt-server-fn',],
 
 	shadcn: {
 		prefix: '',

@@ -23,9 +23,9 @@ const users = data.value?.body.users || [];
 </script>
 
 <template>
-	<div>
+	<div className="flex-grow text-center pt-4">
 		<div>
-			users who liked posts by authors {{ authors.usernames.join(", ") }}
+			users who liked posts by authors: {{ authors.usernames.join(", ") }}
 		</div>
 		<li v-for="liker in users">
 			<RowsUser :id="liker?.id || 0" :username="liker?.username || ''" />

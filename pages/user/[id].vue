@@ -11,15 +11,15 @@ const { user, posts } = await userPage(username as string);
 
 <template>
 
-	<div>
+	<div className="flex-grow text-center pt-4">
 		id: {{ user.id }}
 	</div>
 
-	<div>
+	<div className="flex-grow text-center pt-4">
 		username: {{ user.username }}
 	</div>
 
-	<div>
+	<div className="flex-grow text-center pt-4">
 		<div>posts:</div>
 		<li v-for="post in posts">
 			<RowsPost :id="post.id" :content="post.content" />

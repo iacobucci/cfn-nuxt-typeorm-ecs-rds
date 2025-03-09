@@ -2,19 +2,12 @@
 import type { UsersWhoLikedPostsByAuthors } from "~/types/api";
 
 const parameters = useRoute().query;
-const params = useRoute().params;
 
 const authors = reactive<UsersWhoLikedPostsByAuthors>(
 	parameters.authors
 		? { usernames: (parameters.authors as string).split(",") }
 		: { usernames: [] },
 );
-
-let pattern = params.patterns as string;
-
-if (!["Raw", "QueryBuilder", "ActiveRecord"].includes(pattern)) {
-	pattern = "Raw";
-}
 
 const { data, error } = await useFetch(
 	"/api/users/whoLikedPostsByAuthorsRaw",
@@ -30,7 +23,7 @@ const users = (data.value?.body as { users: { id: number, username: string }[] }
 </script>
 
 <template>
-	<div>
+	<div className="flex-grow text-center pt-4">
 		<div>
 			users who liked posts by authors {{ authors.usernames.join(", ") }}
 		</div>

@@ -23,7 +23,7 @@ const users = data.value?.body.users || [];
 </script>
 
 <template>
-	<div>
+	<div className="flex-grow text-center pt-4">
 		<div>
 			users who liked posts by authors {{ authors.usernames.join(", ") }}
 		</div>

@@ -1,6 +1,5 @@
 import type { UsersWhoLikedPostsByAuthors } from "~/types/api"
 import { User } from "~/entities/User";
-import { In } from "typeorm";
 
 export default defineEventHandler(async event => {
 

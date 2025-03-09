@@ -38,16 +38,6 @@ export default defineNuxtConfig({
 			hmr: true,
 		},
 		esbuild: false, // necessario per l'utilizzo dei decoratori typeORM
-		// plugins: [typescript( // necessario per usare gli stub di typeORM nel client
-		// 	{
-		// 		tsconfig: 'tsconfig.json',
-		// 		target: "ES2022",
-		// 		module: "ESNext",
-		// 		experimentalDecorators: true,
-		// 		emitDecoratorMetadata: true,
-		// 		strictPropertyInitialization: false,
-		// 	}
-		// )],
 	},
 
 	typescript: {

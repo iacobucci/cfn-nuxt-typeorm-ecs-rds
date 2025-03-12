@@ -87,12 +87,9 @@ if (process.env.NODE_ENV === "development") {
 		migrations: [],
 		subscribers: [],
 		extra: {
-			max: 1000,
-			min: 10,
-			connectionTimeoutMillis: 30000,
-			keepAlive: true, // Performance.
-			keepAliveInitialDelayMillis: 5000,
-			query_timeout: 10000,
+			max: 10,
+			idleTimeoutMillis: 30000,
+			connectionTimeoutMillis: 2000,
 		},
 	};
 }

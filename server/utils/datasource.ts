@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
 import type { DataSourceOptions } from "typeorm";
-import { Client } from "pg"
+import { Client } from "pg";
 
 import { Message } from "~/entities/Message";
 import { Post } from "~/entities/Post";
@@ -11,7 +11,6 @@ import { User } from "~/entities/User";
 let entities = [User, Message, Post];
 
 let options: DataSourceOptions;
-
 
 if (process.env.NODE_ENV === "development") {
 	options = {
@@ -27,10 +26,8 @@ if (process.env.NODE_ENV === "development") {
 		entities,
 		migrations: [],
 		subscribers: [],
-	}
-}
-
-else if (process.env.NODE_ENV === "test") {
+	};
+} else if (process.env.NODE_ENV === "test") {
 	options = {
 		type: "postgres",
 		host: "localhost",
@@ -44,7 +41,7 @@ else if (process.env.NODE_ENV === "test") {
 		entities,
 		migrations: [],
 		subscribers: [],
-	}
+	};
 	// create test database
 
 	const client = new Client({
@@ -52,33 +49,30 @@ else if (process.env.NODE_ENV === "test") {
 		port: options.port,
 		user: options.username,
 		password: options.password,
-		database: "postgres"
-	})
+		database: "postgres",
+	});
 
 	try {
-		await client.connect()
+		await client.connect();
 
 		// Verifica se il database esiste
 		const checkDb = await client.query(
 			"SELECT 1 FROM pg_database WHERE datname = $1",
-			["test"]
-		)
+			["test"],
+		);
 
 		if (checkDb.rowCount === 0) {
 			// Il database non esiste, quindi lo creiamo
-			await client.query("CREATE DATABASE test")
-			console.log("Database 'test' creato con successo")
+			await client.query("CREATE DATABASE test");
+			console.log("Database 'test' creato con successo");
 		}
 	} catch (error) {
-		console.error("Errore durante la creazione del database:", error)
-		throw error
+		console.error("Errore durante la creazione del database:", error);
+		throw error;
 	} finally {
-		await client.end()
+		await client.end();
 	}
-
-}
-
-else {
+} else {
 	options = {
 		type: "postgres",
 		host: process.env.DB_HOSTNAME,
@@ -92,7 +86,15 @@ else {
 		entities,
 		migrations: [],
 		subscribers: [],
-	}
+		extra: {
+			max: 1000,
+			min: 10,
+			connectionTimeoutMillis: 30000,
+			keepAlive: true, // Performance.
+			keepAliveInitialDelayMillis: 5000,
+			query_timeout: 10000,
+		},
+	};
 }
 
 export const AppDataSource = new DataSource(options);
@@ -100,11 +102,14 @@ export const AppDataSource = new DataSource(options);
 export async function initialize() {
 	try {
 		if (!AppDataSource.isInitialized) {
-			await AppDataSource.initialize()
-			console.log('✅ Typeorm inizializzato', { type: AppDataSource.options.type, database: AppDataSource.options.database })
+			await AppDataSource.initialize();
+			console.log("✅ Typeorm inizializzato", {
+				type: AppDataSource.options.type,
+				database: AppDataSource.options.database,
+			});
 		}
 	} catch (error) {
-		console.error('❌ Errore inizializzazione Typeorm', error)
-		throw error
+		console.error("❌ Errore inizializzazione Typeorm", error);
+		throw error;
 	}
 }

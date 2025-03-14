@@ -113,7 +113,7 @@ if (process.env.NODE_ENV === "development") {
 // 		await AppDataSource.initialize(); // Re-inizializza
 // 	}
 // }
-let AppDataSource: DataSource;
+export let AppDataSource: DataSource;
 
 export async function initialize(): Promise<DataSource> {
   const config = useRuntimeConfig().typeorm;

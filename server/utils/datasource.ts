@@ -81,7 +81,7 @@ if (process.env.NODE_ENV === "development") {
 		username: process.env.DB_USERNAME,
 		password: process.env.DB_PASSWORD,
 		ssl: { rejectUnauthorized: false },
-		synchronize: true,
+		synchronize: false,
 		logging: true,
 		entities,
 		migrations: [],
@@ -94,22 +94,37 @@ if (process.env.NODE_ENV === "development") {
 	};
 }
 
-export const AppDataSource = new DataSource(options);
+// export const AppDataSource = new DataSource(options);
 
-export async function initialize() {
-	try {
-		if (!AppDataSource.isInitialized) {
-			await AppDataSource.initialize();
-			console.log('✅ Typeorm inizializzato');
-		} else {
-			// Verifica se la connessione è ancora valida
-			await AppDataSource.query('SELECT 1');
-		}
-	} catch (error) {
-		console.error('❌ Errore durante la verifica o inizializzazione di Typeorm', error);
-		if (AppDataSource.isInitialized) {
-			await AppDataSource.destroy(); // Chiudi il DataSource esistente
-		}
-		await AppDataSource.initialize(); // Re-inizializza
-	}
+// export async function initialize() {
+// 	try {
+// 		if (!AppDataSource.isInitialized) {
+// 			await AppDataSource.initialize();
+// 			console.log('✅ Typeorm inizializzato');
+// 		} else {
+// 			// Verifica se la connessione è ancora valida
+// 			await AppDataSource.query('SELECT 1');
+// 		}
+// 	} catch (error) {
+// 		console.error('❌ Errore durante la verifica o inizializzazione di Typeorm', error);
+// 		if (AppDataSource.isInitialized) {
+// 			await AppDataSource.destroy(); // Chiudi il DataSource esistente
+// 		}
+// 		await AppDataSource.initialize(); // Re-inizializza
+// 	}
+// }
+let AppDataSource: DataSource;
+
+export async function initialize(): Promise<DataSource> {
+  const config = useRuntimeConfig().typeorm;
+
+  if (!AppDataSource) {
+    AppDataSource = new DataSource(options);
+  }
+
+  if (!AppDataSource.isInitialized) {
+    await AppDataSource.initialize();
+  }
+
+  return AppDataSource;
 }

@@ -100,13 +100,16 @@ export async function initialize() {
 	try {
 		if (!AppDataSource.isInitialized) {
 			await AppDataSource.initialize();
-			console.log("✅ Typeorm inizializzato", {
-				type: AppDataSource.options.type,
-				database: AppDataSource.options.database,
-			});
+			console.log('✅ Typeorm inizializzato');
+		} else {
+			// Verifica se la connessione è ancora valida
+			await AppDataSource.query('SELECT 1');
 		}
 	} catch (error) {
-		console.error("❌ Errore inizializzazione Typeorm", error);
-		throw error;
+		console.error('❌ Errore durante la verifica o inizializzazione di Typeorm', error);
+		if (AppDataSource.isInitialized) {
+			await AppDataSource.destroy(); // Chiudi il DataSource esistente
+		}
+		await AppDataSource.initialize(); // Re-inizializza
 	}
 }

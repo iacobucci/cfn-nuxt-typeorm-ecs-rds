@@ -8,6 +8,8 @@ export default defineEventHandler(async event => {
 
 	const usernames = body.usernames;
 
+	User.useDataSource(await initialize());
+
 	const authors = await User.find({
 		where: [{ username: In(usernames) }],
 		relations: { posts: { likedBy: true } },
